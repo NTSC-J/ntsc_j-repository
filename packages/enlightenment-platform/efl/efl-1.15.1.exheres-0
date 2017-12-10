@@ -1,0 +1,14 @@
+# Copyright 2010 Paul Seidler
+# Copyright 2014 Thomas G. Anderson
+# Distributed under the terms of the GNU General Public License v2
+
+require efl
+
+SLOT="1"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build+run:
+        sdl? ( media-libs/SDL:2 )
+"
+

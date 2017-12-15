@@ -1,0 +1,34 @@
+Common subdirectories: nilfs-utils/autom4te.cache and nilfs-utils_/autom4te.cache
+Common subdirectories: nilfs-utils/bin and nilfs-utils_/bin
+diff -u8 nilfs-utils/configure.ac nilfs-utils_/configure.ac
+--- nilfs-utils/configure.ac	2017-12-12 18:02:50.528878251 +0900
++++ nilfs-utils_/configure.ac	2017-12-15 23:57:52.617896337 +0900
+@@ -176,18 +176,18 @@
+ 
+ # Checks for system services
+ AC_SYS_LARGEFILE
+ 
+ # Install directories
+ AC_PREFIX_DEFAULT([/usr])
+ test "x$prefix" = "xNONE" && prefix="/usr"
+ test "x$exec_prefix" = "xNONE" && exec_prefix="${prefix}"
+-AC_SUBST([root_sbindir], [/sbin])
+-AC_SUBST([sbindir], [${exec_prefix}/sbin])
++AC_SUBST([root_sbindir], [${exec_prefix}/bin])
++AC_SUBST([sbindir], [${exec_prefix}/bin])
+ AC_SUBST([sysconfdir], [/etc])
+ AC_SUBST([localstatedir], [/var])
+ 
+ AC_CONFIG_FILES([Makefile
+ 		 bin/Makefile
+ 		 etc/Makefile
+ 		 include/Makefile
+ 		 lib/Makefile
+Common subdirectories: nilfs-utils/etc and nilfs-utils_/etc
+Common subdirectories: nilfs-utils/.git and nilfs-utils_/.git
+Common subdirectories: nilfs-utils/include and nilfs-utils_/include
+Common subdirectories: nilfs-utils/lib and nilfs-utils_/lib
+Common subdirectories: nilfs-utils/m4 and nilfs-utils_/m4
+Common subdirectories: nilfs-utils/man and nilfs-utils_/man
+Common subdirectories: nilfs-utils/sbin and nilfs-utils_/sbin
+Common subdirectories: nilfs-utils/scripts and nilfs-utils_/scripts

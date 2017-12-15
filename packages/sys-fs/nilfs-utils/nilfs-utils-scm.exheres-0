@@ -1,0 +1,13 @@
+# Copyright 2009 Bryan Østergaard
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/nilfs-dev/nilfs-utils.git"
+
+require nilfs-utils
+require scm-git
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+DOWNLOADS=""
+
+PLATFORMS="~amd64 ~x86"
+

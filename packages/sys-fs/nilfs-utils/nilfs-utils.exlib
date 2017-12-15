@@ -1,0 +1,18 @@
+# Copyright 2017 Fuga Kato
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Utils for NILFS2, a continuous snapshotting filesystem"
+HOMEPAGE="https://nilfs.sourceforge.io/en"
+
+BUGS_TO=""
+
+UPSTREAM_CHANGELOG="${HOMEPAGE}/archive.html"
+UPSTREAM_DOCUMENTATION="${HOMEPAGE}"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+DEFAULT_SRC_PREPARE_PATCHES=( -p1 ${FILES}/0001-${PN}_sbin-to-bin.patch )

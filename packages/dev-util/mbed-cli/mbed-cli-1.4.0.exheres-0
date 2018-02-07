@@ -1,0 +1,21 @@
+# Copyright 2018 Fuga Kato <s1713087@coins.tsukuba.ac.jp>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi [ suffix=zip ] setup-py [ import=setuptools ]
+
+SUMMARY="Arm Mbed Command Line Interface"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        dev-lang/python:2.7
+        dev-scm/git
+        dev-scm/mercurial
+"
+
+BUGS_TO="s1713087@coins.tsukuba.ac.jp"
+

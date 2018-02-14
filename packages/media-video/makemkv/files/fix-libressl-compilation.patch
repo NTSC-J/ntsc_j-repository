@@ -1,0 +1,35 @@
+Author: cardinal , see below
+Source: https://forum.voidlinux.eu/t/makemkv-problem-with-libressl/3088/2
+Upstream: No
+Reason: Some new functions were introduced in OpenSSL 1.1.0, which aren't in
+LibreSSL. Since LibreSSL's VERSION_NUMBER is >2 the below checks would try to
+use the new functionality of OpenSSL
+--- libabi/src/ossl_ec.c.old	2017-05-27 16:10:21.000000000 -0400
++++ libabi/src/ossl_ec.c	2017-07-25 14:50:44.039398939 -0400
+@@ -215,7 +215,7 @@
+ {
+     int r = -1;
+ 
+-#if (OPENSSL_VERSION_NUMBER >= 0x10100006L)
++#if OPENSSL_VERSION_NUMBER >= 0x10100006L && !defined(LIBRESSL_VERSION_NUMBER) 
+     {
+         ECDSA_SIG *sig = ECDSA_SIG_new();
+         if (!sig) return -1;
+@@ -239,7 +239,7 @@
+ 
+ const OSSL_BIGNUM* OSSL_ecdsa_sig_get_r(const OSSL_ECDSA_SIG* sig)
+ {
+-#if (OPENSSL_VERSION_NUMBER >= 0x10100006L)
++#if OPENSSL_VERSION_NUMBER >= 0x10100006L && !defined(LIBRESSL_VERSION_NUMBER)
+     {
+         const BIGNUM* r;
+         ECDSA_SIG_get0((const ECDSA_SIG*)sig,&r,NULL);
+@@ -252,7 +252,7 @@
+ 
+ const OSSL_BIGNUM* OSSL_ecdsa_sig_get_s(const OSSL_ECDSA_SIG* sig)
+ {
+-#if (OPENSSL_VERSION_NUMBER >= 0x10100006L)
++#if OPENSSL_VERSION_NUMBER >= 0x10100006L && !defined(LIBRESSL_VERSION_NUMBER)
+     {
+         const BIGNUM* s;
+         ECDSA_SIG_get0((const ECDSA_SIG*)sig,NULL,&s);

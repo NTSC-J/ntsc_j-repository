@@ -1,0 +1,17 @@
+# Copyright 2018 Fuga Kato <s1713087@coins.tsukuba.ac.jp>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi setup-py [ import=setuptools ]
+
+SUMMARY="mbed 3.0 onwards test suite, codename Greentea. The test suite is a collection of tools that enable automated testing on mbed-enabled platforms"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+"
+
+BUGS_TO="s1713087@coins.tsukuba.ac.jp"
+

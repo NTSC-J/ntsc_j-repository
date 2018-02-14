@@ -15,6 +15,20 @@ DEPENDENCIES="
         dev-lang/python:2.7
         dev-scm/git
         dev-scm/mercurial
+        dev-python/colorama
+        dev-python/pyserial
+        dev-python/PrettyTable
+        dev-python/Jinja2
+        dev-python/intelhex
+        dev-python/junit-xml
+        dev-pytnon/PyYAML
+        dev-pytnon/mbed-ls
+        dev-python/mbed-host-tests
+        dev-python/mbed-greentea
+        dev-python/beautifulsoup4
+        dev-python/fuzzywuzzy
+        dev-python/pyelftools
+        dev-python/jsonschema
 "
 
 BUGS_TO="s1713087@coins.tsukuba.ac.jp"

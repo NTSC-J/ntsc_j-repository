@@ -27,11 +27,7 @@ MYOPTIONS="
 "
 DEPENDENCIES="
     build:
-        x11-proto/xineramaproto
-        X? (
-            x11-proto/kbproto
-            x11-proto/printproto
-        )
+        X? ( x11-proto/xorgproto )
     build+run:
         dev-libs/fribidi
         dev-lang/LuaJIT

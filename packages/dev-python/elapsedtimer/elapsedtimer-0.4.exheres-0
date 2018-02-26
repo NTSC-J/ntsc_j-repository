@@ -3,18 +3,14 @@
 
 require pypi setup-py [ import=setuptools ]
 
-SUMMARY="mbed 3.0 onwards test suite, codename Greentea. The test suite is a collection of tools that enable automated testing on mbed-enabled platforms"
+SUMMARY="Elapsed timer and utilities"
 
-LICENCES="Apache-2.0"
+LICENCES="BSD-3"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    run:
-        dev-python/mock
-        dev-python/lockfile
-        dev-python/pyOCD
 "
 
 BUGS_TO="s1713087@coins.tsukuba.ac.jp"

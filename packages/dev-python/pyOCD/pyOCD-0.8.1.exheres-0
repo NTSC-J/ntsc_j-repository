@@ -3,7 +3,10 @@
 
 require pypi setup-py [ import=setuptools ]
 
-SUMMARY="mbed 3.0 onwards test suite, codename Greentea. The test suite is a collection of tools that enable automated testing on mbed-enabled platforms"
+MY_PV=${PV}a1
+MY_PNV=${PN}-${MY_PV}
+
+SUMMARY="CMSIS-DAP debugger for Python"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -12,9 +15,10 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     run:
-        dev-python/mock
-        dev-python/lockfile
-        dev-python/pyOCD
+        dev-python/pytest
+        dev-python/pytest-catchlog
+        dev-python/coverage
+        dev-python/elapsedtimer
 "
 
 BUGS_TO="s1713087@coins.tsukuba.ac.jp"

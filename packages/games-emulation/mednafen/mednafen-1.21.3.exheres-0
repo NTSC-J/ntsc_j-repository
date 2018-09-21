@@ -1,0 +1,6 @@
+# Copyright 2018 Fuga Kato
+# Distributed under the terms of the GNU General Public License v2
+
+require mednafen
+
+PLATFORMS="~amd64 ~x86"

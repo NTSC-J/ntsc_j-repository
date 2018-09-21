@@ -1,0 +1,28 @@
+# Copyright 2018 Fuga Kato
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="A portable, utilizing OpenGL and SDL, argument(command-line)-driven multi-system emulator"
+HOMEPAGE="https://mednafen.github.io"
+
+DOWNLOADS="${HOMEPAGE}/releases/files/${PNV}.tar.xz"
+
+BUGS_TO=""
+
+UPSTREAM_CHANGELOG="${HOMEPAGE}/documentation/ChangeLog.txt"
+UPSTREAM_DOCUMENTATION="${HOMEPAGE}"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        sys-sound/alsa-lib
+        media-libs/SDL:2
+        media-libs/libsndfile
+        sys-libs/zlib
+"
+WORK="${WORKBASE}/${PN}"
+DEFAULT_SRC_COMPILE_PARAMS="AR=${CHOST}-ar"

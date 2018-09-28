@@ -19,8 +19,6 @@ PLATFORMS="~amd64 ~x86"
 MYOPTIONS="bidi debug doc perl png readline svg iconv nls xft"
 
 DEPENDENCIES="
-    build:
-        virtual/pkg-config
     build+run:
         x11-proto/xorgproto
         bidi?   ( dev-libs/fribidi )
@@ -39,8 +37,5 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     'perl perllib'
     'svg rsvg'
 )
-
-fvwm_src_prepare() {
-    default
-    autotools_src_prepare
-}
+DEFAULT_SRC_CONFIGURE_PARAMS="PKG_CONFIG=/usr/host/bin/${CHOST}-pkg-config"
+DEFAULT_SRC_COMPILE_PARAMS="AR=${CHOST}-ar"

@@ -1,0 +1,35 @@
+# Copyright 2018 Fuga Kato
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_compile src_install
+
+SUMMARY="A minimalistic, open-source SAT solver, developed to help researchers and developers alike to get started on SAT"
+HOMEPAGE="http://minisat.se"
+
+DOWNLOADS="${HOMEPAGE}/downloads/${PNV}.tar.gz"
+
+BUGS_TO=""
+
+UPSTREAM_CHANGELOG="${HOMEPAGE}/MiniSat.html"
+UPSTREAM_DOCUMENTATION="${HOMEPAGE}/downloads/MiniSat.pdf"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS="
+    simp [[ description = [ enable simplification capabilities ] ]]
+"
+
+DEPENDENCIES="
+"
+
+WORK="${WORKBASE}/${PN}"
+
+minisat_src_compile() {
+    export MROOT=${WORK}
+    if optionq simp; then cd simp; else cd core; fi
+    emake rs "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
+    mv minisat_static minisat
+}
+minisat_src_install() {
+    if optionq simp; then dobin simp/minisat; else dobin core/minisat; fi
+}

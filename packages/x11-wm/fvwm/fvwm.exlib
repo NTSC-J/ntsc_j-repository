@@ -1,0 +1,64 @@
+# Copyright 2009 Hong Hao <oahong@gmail.com>
+# Copyright 2010 Cecil Curry <leycec@gmail.com>
+# Copyright 2018 Fuga Kato
+# Distributed under the terms of the GNU General Public License v3 or later
+
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require github [ user=fvwmorg release=${PV} suffix=tar.gz ]
+
+SUMMARY="FVWM is an ICCCM-compliant multiple desktop window manager for X11."
+DESCRIPTION="FVWM (F? Virtual Window Manager) is an X11 window manager designed to minimize memory
+consumption; customize window, icon, and desktop appearance; and provide multiple virtual desktops."
+
+HOMEPAGE="http://www.fvwm.org"
+LICENCES="GPL-2"
+
+SLOT="0"
+
+MYOPTIONS="
+    bidi
+    debug
+    doc
+    perl
+    png
+    svg
+    readline
+    iconv [[ description = [ support for iconv character conversion ] ]]
+    nls
+    xft
+    sm [[ description = [ session management support ] ]]
+    shape [[ description = [ shaped window support ] ]]
+    shm [[ description = [ MIT shared memory extension ] ]]
+    xinerama
+"
+
+DEPENDENCIES="
+    build+run:
+        x11-proto/xorgproto
+        bidi?   ( dev-libs/fribidi )
+        perl?   ( dev-lang/perl )
+        png?    ( media-libs/libpng )
+        svg?    ( gnome-desktop/librsvg )
+        xft?    ( x11-libs/libXft )
+"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    bidi
+    iconv
+    nls
+    sm
+    shape
+    shm
+    xinerama
+    xft
+    png
+    'doc htmldoc'
+    'doc mandoc'
+    'perl perllib'
+    'svg rsvg'
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    readline
+)
+DEFAULT_SRC_CONFIGURE_PARAMS="PKG_CONFIG=/usr/host/bin/${CHOST}-pkg-config"
+DEFAULT_SRC_COMPILE_PARAMS="AR=${CHOST}-ar"

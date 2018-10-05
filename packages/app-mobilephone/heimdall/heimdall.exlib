@@ -1,0 +1,47 @@
+# Copyright 2018 Fuga Kato
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'heimdall-1.4.2.ebuild' from Gentoo, which is:
+#     Copyright 1999-2018 Gentoo Foundation
+
+require cmake [ api=1 ]
+require gitlab [ user=BenjaminDobell pn=Heimdall tag=v${PV} ]
+
+export_exlib_phases src_configure src_install
+
+SUMMARY="Tool suite used to flash firmware onto Samsung Galaxy S devices"
+HOMEPAGE="https://glassechidna.com.au/heimdall/"
+
+BUGS_TO=""
+
+UPSTREAM_CHANGELOG=""
+UPSTREAM_DOCUMENTATION="${HOMEPAGE}"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS="
+    qt5
+"
+
+DEPENDENCIES="
+    run:
+        dev-libs/libusb:1
+        qt5? (
+            x11-libs/qtbase:5[gui]
+        )
+        sys-libs/zlib
+"
+
+heimdall_src_configure() {
+    CMAKE_SRC_CONFIGURE_PARAMS="-DDISABLE_FRONTEND=$(option qt5 OFF ON)"
+    cmake_src_configure
+}
+
+heimdall_src_install() {
+    dobin ${ECMAKE_BUILD_DIR}/bin/heimdall
+    optionq qt5 && dobin ${ECMAKE_BUILD_DIR}/bin/heimdall-frontend
+
+    insinto "/usr/$(exhost --target)/lib/udev/rules.d"
+    doins heimdall/60-heimdall.rules
+
+    dodoc README.md Linux/README
+}

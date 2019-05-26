@@ -1,0 +1,292 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_configure src_install
+
+require systemd-service openrc-service [ openrc_confd_files=[ "${FILES}"/openrc/confd ] ]
+
+export_exlib_phases pkg_setup
+
+SUMMARY="nginx [engine x] is a HTTP and reverse proxy server, as well as a mail proxy server"
+HOMEPAGE="https://nginx.org/"
+
+# nginx-ldap-auth-module (https://github.com/kvspb/nginx-auth-ldap, BSD-2)
+HTTP_LDAP_MODULE_PV="42d195d7a7575ebab1c369ad3fc5d78dc2c2669c"
+HTTP_LDAP_MODULE_PNV="nginx-auth-ldap-${HTTP_LDAP_MODULE_PV}"
+HTTP_LDAP_MODULE_URI="https://github.com/kvspb/nginx-auth-ldap/archive/${HTTP_LDAP_MODULE_PV}.tar.gz"
+HTTP_LDAP_MODULE_WD="${WORKBASE}/${HTTP_LDAP_MODULE_PNV}"
+
+# nginx-headers-more-modules (https://github.com/openresty/headers-more-nginx-module, BSD-2)
+HEADERS_MORE_MODULE_PV="0.33"
+HEADERS_MORE_MODULE_PNV="headers-more-nginx-module-${HEADERS_MORE_MODULE_PV}"
+HEADERS_MORE_MODULE_URI="https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_MODULE_PV}.tar.gz"
+HEADERS_MORE_MODULE_WD="${WORKBASE}/${HEADERS_MORE_MODULE_PNV}"
+
+RTMP_MODULE_PV="1.2.1"
+RTMP_MODULE_PNV="ngx_rtmp-${RTMP_MODULE_PV}"
+RTMP_MODULE_URI="https://github.com/arut/nginx-rtmp-module/archive/v${RTMP_MODULE_PV}.tar.gz"
+RTMP_MODULE_WD="${WORKBASE}/nginx-rtmp-module-${RTMP_MODULE_PV}"
+
+DOWNLOADS="
+    https://nginx.org/download/${PNV}.tar.gz
+    nginx_modules:auth_ldap? ( $HTTP_LDAP_MODULE_URI -> $HTTP_LDAP_MODULE_PNV.tar.gz )
+    nginx_modules:headers_more? ( $HEADERS_MORE_MODULE_URI -> $HEADERS_MORE_MODULE_PNV.tar.gz )
+    nginx_modules:rtmp? ( $RTMP_MODULE_URI -> $RTMP_MODULE_PNV.tar.gz )
+"
+
+LICENCES="BSD-2"
+SLOT="0"
+
+NGINX_HTTP_OPTIONS=(
+    "ssl          HTTPS/SSL support"
+    "realip       For using nginx as backend"
+    "addition     Append text to pages"
+    "xslt         Post-process pages with XSLT"
+    "image_filter Transform images with Libgd"
+    "geoip        Creates variables with information from the MaxMind GeoIP binary files"
+    "sub          Replace text in pages"
+    "dav          WebDAV pass-through support"
+    "flv          Flash Streaming Video"
+    "mp4          Enables mp4 streaming with seeking ability"
+    "gzip_static  Serves precompressed versions of static files"
+    "random_index Randomize directory indexes"
+    "secure_link  Protect pages with a secret key"
+    "degradation  Allow to return 204 or 444 code for some locations on low memory condition"
+    "stub_status  View server statistics"
+    "perl         Use Perl in Nginx config files"
+    "gunzip       gunzip filter"
+    "v2           HTTP v2 support"
+    "auth_request Enable client authorization based on the result of a subrequest"
+)
+
+NGINX_DEFAULT_HTTP_OPTIONS=(
+    "charset          Recode web pages"
+    "gzip             Gzip responses"
+    "ssi              Server-side includes"
+    "userid           Issue identifying cookies"
+    "access           Allow/deny based on IP address"
+    "auth_basic       Basic HTTP authentication"
+    "autoindex        Generates automatic directory listings"
+    "geo              Set config variables using key/value pairs of IP addresses"
+    "map              Set config variables using arbitrary key/value pairs"
+    "mirror           Mirror an original request by creating background mirror subrequests"
+    "split_clients    Splits clients based on some conditions"
+    "referer          Filter requests based on Referer header"
+    "rewrite          Request rewriting using regular expressions"
+    "proxy            Proxy to upstream servers"
+    "fastcgi          FastCGI Support"
+    "uwsgi            uwsgi protocol support"
+    "scgi             scgi protocol support"
+    "memcached        Memcached support"
+    "limit_conn       Limit concurrent connections based on a variable"
+    "limit_req        Limit frequency of connections from a client"
+    "empty_gif        Serve a 1x1 image from memory"
+    'browser          Interpret "User-Agent" string'
+    "upstream_ip_hash For load-balancing"
+    "upstream_least_conn Enables least_conn load balancing method"
+    "upstream_keepalive Enables keep-alive connections for upstream servers"
+)
+
+NGINX_MAIL_OPTIONS=(
+    # ssl
+)
+
+NGINX_DEFAULT_MAIL_OPTIONS=(
+    "pop3 POP3 protocol support"
+    "imap IMAP protocol support"
+    "smtp SMTP protocol support"
+)
+
+NGINX_STREAM_OPTIONS=(
+    "stream_ssl              SSL support for stream module"
+)
+
+NGINX_DEFAULT_STREAM_OPTIONS=(
+    "stream_access           Allow/deny based on IP address (stream module)"
+    "stream_limit_conn       Limit concurrent connections based on a variable (stream module)"
+    "stream_upstream_least_conn Enables least_conn load balancing method (stream module)"
+)
+
+NGINX_3RD_PARTY_OPTIONS=(
+    "auth_ldap               HTTP authentication using openldap"
+    "headers_more            Set and clear input and output headers...more than \"add\"!"
+    "rtmp                    RTMP streaming server"
+)
+
+MYOPTIONS="
+    file-aio             [[ description = [ enable file aio support ] ]]
+
+    http                 [[ description = [ enable HTTP server ] ]]
+    http-cache           [[ description = [ enable HTTP cache ] requires = http ]]
+
+    mail                 [[ description = [ enable mail server ] ]]
+    stream               [[ description = [ module for generic TCP proxying and load balancing ] ]]
+
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+for x in "${NGINX_HTTP_OPTIONS[@]}" "${NGINX_DEFAULT_HTTP_OPTIONS[@]}"; do
+    set $x
+    mod=$1
+    shift
+    description="$@"
+    MYOPTIONS+="
+    nginx_modules: ${mod} [[ description = [ ${description} ] requires = http ]]
+"
+done
+for x in "${NGINX_MAIL_OPTIONS[@]}" "${NGINX_DEFAULT_MAIL_OPTIONS[@]}"; do
+    set $x
+    mod=$1
+    shift
+    description="$@"
+    MYOPTIONS+="
+    nginx_modules: ${mod} [[ description = [ ${description} ] requires = mail ]]
+"
+done
+for x in "${NGINX_STREAM_OPTIONS[@]}" "${NGINX_DEFAULT_STREAM_OPTIONS[@]}"; do
+    set $x
+    mod=$1
+    shift
+    description="$@"
+    MYOPTIONS+="
+    nginx_modules: ${mod} [[ description = [ ${description} ] requires = stream ]]
+"
+done
+for x in "${NGINX_3RD_PARTY_OPTIONS[@]}"; do
+    set $x
+    mod=$1
+    shift
+    description="$@"
+    MYOPTIONS+="
+    nginx_modules: ${mod} [[ description = [ ${description} ] requires = http ]]
+"
+done
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/pcre
+        user/nginx
+        sys-libs/zlib
+        nginx_modules:geoip? ( net-libs/GeoIP )
+        nginx_modules:gzip? ( sys-libs/zlib )
+        nginx_modules:image_filter? ( media-libs/gd )
+        nginx_modules:perl? ( dev-lang/perl:= )
+        nginx_modules:ssl? (
+            providers:libressl? ( dev-libs/libressl:= )
+            providers:openssl? ( dev-libs/openssl )
+        )
+        nginx_modules:auth_ldap? ( net-directory/openldap )
+"
+
+nginx_pkg_setup() {
+    exdirectory --allow /srv
+}
+
+nginx_src_configure() {
+    local myconf=(
+        --prefix=/srv/www/nginx
+        --sbin-path=/usr/$(exhost --target)/bin/nginx
+        --conf-path=/etc/nginx/nginx.conf
+        --error-log-path=/var/log/nginx/error_log
+        --pid-path=/run/nginx.pid
+        --lock-path=/run/lock/nginx.lock
+        --user=nginx --group=nginx
+        --http-log-path=/var/log/nginx/access_log
+        --http-client-body-temp-path=/tmp/nginx/client
+        --http-proxy-temp-path=/tmp/nginx/proxy
+        --http-fastcgi-temp-path=/tmp/nginx/fastcgi
+        --http-scgi-temp-path=/tmp/nginx/scgi
+        --http-uwsgi-temp-path=/tmp/nginx/uwsgi
+        --with-pcre
+        --with-ld-opt="-lrt"
+    )
+
+    option file-aio && myconf+=( --with-file-aio )
+
+    local x mod
+
+    for x in "${NGINX_HTTP_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} && \
+            myconf+=( --with-http_${mod}_module )
+    done
+
+    for x in "${NGINX_DEFAULT_HTTP_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} || \
+            myconf+=( --without-http_${mod}_module )
+    done
+
+    option http || myconf+=( --without-http )
+    option http-cache || myconf+=( --without-http-cache )
+    option mail && myconf+=( --with-mail )
+
+    for x in "${NGINX_MAIL_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} && \
+            myconf+=( --with-mail_${mod}_module )
+    done
+
+    for x in "${NGINX_DEFAULT_MAIL_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} || \
+            myconf+=( --without-mail_${mod}_module )
+    done
+
+    option stream && myconf+=( --with-stream )
+    for x in "${NGINX_STREAM_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} && \
+            myconf+=( --with-${mod}_module )
+    done
+
+    for x in "${NGINX_DEFAULT_STREAM_OPTIONS[@]}"; do
+        set $x
+        mod=$1
+        option nginx_modules:${mod} || \
+            myconf+=( --without-${mod}_module )
+    done
+
+    option nginx_modules:auth_ldap && myconf+=( --add-module=$HTTP_LDAP_MODULE_WD )
+    option nginx_modules:headers_more && myconf+=( --add-module=$HEADERS_MORE_MODULE_WD )
+    option nginx_modules:rtmp && myconf+=( --add-module=$RTMP_MODULE_WD )
+
+    edo ./configure "${myconf[@]}"
+}
+
+nginx_src_install() {
+    default
+
+    doman man/nginx.8
+
+    keepdir /var/log/nginx
+    edo rmdir "${IMAGE}"/run
+
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    hereins nginx.conf <<EOF
+d /tmp/nginx 0755 nginx nginx
+d /tmp/nginx/client 0700 nginx nginx
+d /tmp/nginx/proxy 0700 nginx nginx
+d /tmp/nginx/fastcgi 0700 nginx nginx
+d /tmp/nginx/scgi 0700 nginx nginx
+d /tmp/nginx/uwsgi 0700 nginx nginx
+EOF
+
+    if option nginx_modules:perl; then
+        edo rm "${IMAGE}"/usr/$(exhost --target)/lib/perl5/core_perl/5.*/perllocal.pod
+        edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/perl5/core_perl/5.*/
+        edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/perl5/core_perl/
+    fi
+
+    install_systemd_files
+    edo sed -i -e "1 i# for systemd, don't daemonize" \
+               -e '1 idaemon off;' \
+               "${IMAGE}"/etc/nginx/nginx.conf
+
+    installs_openrc_files
+}
+

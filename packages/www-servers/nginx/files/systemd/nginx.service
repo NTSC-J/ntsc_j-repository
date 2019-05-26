@@ -1,0 +1,11 @@
+[Unit]
+Description=nginx HTTP server
+After=network.target
+
+[Service]
+ExecStart=/usr/host/bin/nginx
+ExecReload=/usr/host/bin/nginx -s reload
+ExecStop=/usr/host/bin/nginx -s stop
+
+[Install]
+WantedBy=multi-user.target
